@@ -6,6 +6,15 @@ import { signInWithEmailAndPassword } from 'firebase/auth'; // Función para ini
 import { useFonts } from 'expo-font';
 import { Rajdhani_400Regular, Rajdhani_700Bold } from '@expo-google-fonts/rajdhani';
 import { Asap_400Regular, Asap_700Bold } from '@expo-google-fonts/asap';
+=======
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
+import React from 'react';
+
+/* Para las fuentes */
+import { useFonts } from 'expo-font';
+import { Rajdhani_400Regular, Rajdhani_700Bold } from '@expo-google-fonts/rajdhani';
+import { Asap_400Regular } from '@expo-google-fonts/asap';
 
 export function LoginScreen() {
   const navigation = useNavigation();
@@ -18,6 +27,11 @@ export function LoginScreen() {
   const [fontsLoaded] = useFonts({
     Rajdhani_400Regular,
     Rajdhani_700Bold,
+    
+  // Cargar las fuentes
+  const [fontsLoaded] = useFonts({
+    Rajdhani_400Regular,
+    Rajdhani_700Bold, // Fuente en negrita
     Asap_400Regular,
   });
 
@@ -52,6 +66,10 @@ export function LoginScreen() {
     }
   };
 
+
+  // Usar una fuente por defecto hasta que las fuentes personalizadas se carguen
+  const defaultFont = 'Rajdhani_400Regular'; // Ya que fontsLoaded es true, podemos usar la fuente
+  
   return (
     <View style={styles.contenedor}>
       <Image 
@@ -66,9 +84,9 @@ export function LoginScreen() {
         style={[styles.input, styles.inputCorreo, { fontFamily: 'Rajdhani_400Regular' }]}
         placeholder='Introduzca su correo o nick...'
         placeholderTextColor="#aaa"
-        keyboardType="email-address"
+        keyboardType="email-address" // Permite la entrada de texto o email. Especifica el tipo de teclado que debe aparecer cuando el usuario interactúa con el campo de entrada de texto. Dependiendo de la plataforma y del tipo de entrada que esperes, puedes mostrar diferentes teclados para facilitar la experiencia del usuario
         value={email}
-        onChangeText={setEmail}
+        onChangeText={setEmail} 
       />
 
       {/* Campo de contraseña */}
@@ -79,6 +97,10 @@ export function LoginScreen() {
         secureTextEntry={true}
         value={password}
         onChangeText={setPassword}
+        style={[styles.input, styles.inputContraseña, { fontFamily: defaultFont }]}
+        placeholder='Introduzca su contraseña...'
+        placeholderTextColor="#aaa"
+        secureTextEntry={true}  // Hace que sea un campo de contraseña
       />
       
       {/* Alineación del "¿Olvidaste la contraseña?" */}
@@ -88,6 +110,11 @@ export function LoginScreen() {
 
       <TouchableOpacity style={styles.boton} onPress={handleLogin}>
         <Text style={[styles.textoBoton, { fontFamily: 'Rajdhani_400Regular' }]}>Log in</Text>
+        <Text style={[styles.olvidarContraseña, { fontFamily: defaultFont }]}>¿Olvidaste la contraseña?</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.boton} onPress={() => navigation.navigate('Home')}>
+        <Text style={[styles.textoBoton, { fontFamily: defaultFont }]}>Log in</Text>
       </TouchableOpacity>
 
       {/* Espaciado + Línea horizontal + Mensaje */}
@@ -97,6 +124,9 @@ export function LoginScreen() {
           <Text style={[styles.crearCuentaPregunta, { fontFamily: 'Rajdhani_400Regular' }]}>¿No tienes cuenta? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Register')}>
             <Text style={[styles.crearCuenta, { fontFamily: 'Rajdhani_400Regular' }]}>Crear Cuenta</Text>
+          <Text style={[styles.crearCuentaPregunta, { fontFamily: defaultFont }]}>¿No tienes cuenta? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+            <Text style={[styles.crearCuenta, { fontFamily: defaultFont }]}>Crear Cuenta</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -3,6 +3,11 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } fro
 import { useNavigation } from "@react-navigation/native";
 import { auth } from '../firebase';  // Importa el auth de Firebase
 import { createUserWithEmailAndPassword } from 'firebase/auth';  // Función para crear un nuevo usuario
+import React from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
+
+/* Para las fuentes */
 import { useFonts } from 'expo-font';
 import { Rajdhani_400Regular, Rajdhani_700Bold } from '@expo-google-fonts/rajdhani';
 import { Asap_400Regular } from '@expo-google-fonts/asap';
@@ -49,6 +54,18 @@ export function RegisterScreen() {
   if (!fontsLoaded) {
     return null; // Puedes poner un cargador aquí si es necesario
   }
+
+  const navigation = useNavigation();
+  
+  // Cargar las fuentes
+  const [fontsLoaded] = useFonts({
+    Rajdhani_400Regular,
+    Rajdhani_700Bold, // Fuente en negrita
+    Asap_400Regular,
+  });
+  
+  // Usar una fuente por defecto hasta que las fuentes personalizadas se carguen
+  const defaultFont = fontsLoaded ? 'Rajdhani_400Regular' : 'sans-serif'; // Fuente predeterminada
 
   return (
     <View style={styles.container}>
@@ -115,6 +132,20 @@ export function RegisterScreen() {
       />
 
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
+      <TextInput style={styles.input} placeholder="Introduzca su nick" placeholderTextColor="#ccc" />
+      <TextInput style={styles.input} placeholder="Introduzca su nombre" placeholderTextColor="#ccc" />
+      <TextInput
+        style={styles.input}
+        placeholder="Introduzca su primer apellido"
+        placeholderTextColor="#ccc"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Introduzca su segundo apellido"
+        placeholderTextColor="#ccc"
+      />
+
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
         <Text style={styles.buttonText}>FINALIZAR</Text>
       </TouchableOpacity>
     </View>
