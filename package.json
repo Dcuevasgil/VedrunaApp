@@ -10,8 +10,15 @@
   },
   "dependencies": {
     "@expo-google-fonts/asap": "^0.2.3",
+feature/login_firebase_register_firebase
+    "@expo-google-fonts/asap-condensed": "^0.2.3",
     "@expo-google-fonts/rajdhani": "^0.2.3",
     "@expo/vector-icons": "^14.0.4",
+    "@react-native-firebase/app": "^21.6.2",
+    "@react-native-firebase/auth": "^21.6.2",
+    "@expo-google-fonts/rajdhani": "^0.2.3",
+    "@expo/vector-icons": "^14.0.4",
+develop
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.1",

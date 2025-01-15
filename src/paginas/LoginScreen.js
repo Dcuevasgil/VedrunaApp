@@ -1,3 +1,12 @@
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ActivityIndicator, Alert } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
+import { auth } from '../firebase'; // Importa el auth de Firebase
+import { signInWithEmailAndPassword } from 'firebase/auth'; // Función para iniciar sesión
+import { useFonts } from 'expo-font';
+import { Rajdhani_400Regular, Rajdhani_700Bold } from '@expo-google-fonts/rajdhani';
+import { Asap_400Regular, Asap_700Bold } from '@expo-google-fonts/asap';
+=======
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import React from 'react';
@@ -10,6 +19,15 @@ import { Asap_400Regular } from '@expo-google-fonts/asap';
 export function LoginScreen() {
   const navigation = useNavigation();
 
+  // Estado para manejar los campos del formulario
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  // Cargar las fuentes
+  const [fontsLoaded] = useFonts({
+    Rajdhani_400Regular,
+    Rajdhani_700Bold,
+    
   // Cargar las fuentes
   const [fontsLoaded] = useFonts({
     Rajdhani_400Regular,
@@ -26,6 +44,29 @@ export function LoginScreen() {
     );
   }
 
+  // Función para el inicio de sesión
+  const handleLogin = async () => {
+    if (email === '' || password === '') {
+      Alert.alert('Error', 'Por favor, ingrese su correo y contraseña');
+      return;
+    }
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      Alert.alert('Éxito', 'Bienvenido');
+      navigation.navigate('Home'); // Navega a la pantalla Home si el login es exitoso
+    } catch (error) {
+      if (error.code === 'auth/user-not-found') {
+        Alert.alert('Error', 'No se encontró una cuenta con ese correo');
+      } else if (error.code === 'auth/wrong-password') {
+        Alert.alert('Error', 'La contraseña es incorrecta');
+      } else {
+        Alert.alert('Error', error.message);
+      }
+    }
+  };
+
+
   // Usar una fuente por defecto hasta que las fuentes personalizadas se carguen
   const defaultFont = 'Rajdhani_400Regular'; // Ya que fontsLoaded es true, podemos usar la fuente
   
@@ -40,14 +81,22 @@ export function LoginScreen() {
 
       {/* Campo de email o nickname */}
       <TextInput
-        style={[styles.input, styles.inputCorreo, { fontFamily: defaultFont }]}
+        style={[styles.input, styles.inputCorreo, { fontFamily: 'Rajdhani_400Regular' }]}
         placeholder='Introduzca su correo o nick...'
         placeholderTextColor="#aaa"
-        keyboardType="email-address"  // Permite la entrada de texto o email. Especifica el tipo de teclado que debe aparecer cuando el usuario interactúa con el campo de entrada de texto. Dependiendo de la plataforma y del tipo de entrada que esperes, puedes mostrar diferentes teclados para facilitar la experiencia del usuario
+        keyboardType="email-address" // Permite la entrada de texto o email. Especifica el tipo de teclado que debe aparecer cuando el usuario interactúa con el campo de entrada de texto. Dependiendo de la plataforma y del tipo de entrada que esperes, puedes mostrar diferentes teclados para facilitar la experiencia del usuario
+        value={email}
+        onChangeText={setEmail} 
       />
 
       {/* Campo de contraseña */}
       <TextInput
+        style={[styles.input, styles.inputContraseña, { fontFamily: 'Rajdhani_400Regular' }]}
+        placeholder='Introduzca su contraseña...'
+        placeholderTextColor="#aaa"
+        secureTextEntry={true}
+        value={password}
+        onChangeText={setPassword}
         style={[styles.input, styles.inputContraseña, { fontFamily: defaultFont }]}
         placeholder='Introduzca su contraseña...'
         placeholderTextColor="#aaa"
@@ -56,6 +105,11 @@ export function LoginScreen() {
       
       {/* Alineación del "¿Olvidaste la contraseña?" */}
       <TouchableOpacity style={styles.olvidarContenedor}>
+        <Text style={[styles.olvidarContraseña, { fontFamily: 'Rajdhani_400Regular' }]}>¿Olvidaste la contraseña?</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.boton} onPress={handleLogin}>
+        <Text style={[styles.textoBoton, { fontFamily: 'Rajdhani_400Regular' }]}>Log in</Text>
         <Text style={[styles.olvidarContraseña, { fontFamily: defaultFont }]}>¿Olvidaste la contraseña?</Text>
       </TouchableOpacity>
 
@@ -67,6 +121,9 @@ export function LoginScreen() {
       <View style={styles.lineaContenedor}>
         <View style={styles.linea} />
         <View style={styles.registroContenedor}>
+          <Text style={[styles.crearCuentaPregunta, { fontFamily: 'Rajdhani_400Regular' }]}>¿No tienes cuenta? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+            <Text style={[styles.crearCuenta, { fontFamily: 'Rajdhani_400Regular' }]}>Crear Cuenta</Text>
           <Text style={[styles.crearCuentaPregunta, { fontFamily: defaultFont }]}>¿No tienes cuenta? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Register')}>
             <Text style={[styles.crearCuenta, { fontFamily: defaultFont }]}>Crear Cuenta</Text>
@@ -76,7 +133,6 @@ export function LoginScreen() {
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   contenedor: {
@@ -96,6 +152,7 @@ const styles = StyleSheet.create({
     height: 200, // Alto del logo
     alignSelf: 'center', // Centrar horizontalmente
     marginBottom: 20, // Separación inferior
+    marginTop: 50, // Añadir un margen superior para mover la imagen hacia abajo
   },
   titulo: {
     fontSize: 48, // Tamaño de fuente grande
@@ -103,6 +160,7 @@ const styles = StyleSheet.create({
     textAlign: 'center', // Alineación centrada
     marginBottom: 30, // Separación inferior
     fontWeight: 'bold',
+    fontFamily: 'Asap_700Bold'
   },
   input: {
     backgroundColor: '#323639', // Fondo gris oscuro
@@ -145,6 +203,8 @@ const styles = StyleSheet.create({
   lineaContenedor: {
     marginTop: 20, // 1 cm de separación (aproximado)
     alignItems: 'center', // Centrar elementos en el eje horizontal
+    flex: 1,
+    justifyContent: 'flex-end', // Mueve la línea al final
   },
   linea: {
     height: 2, // Ancho vertical de la línea
@@ -156,6 +216,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', // Alineación horizontal
     justifyContent: 'center', // Centrado de los elementos dentro del contenedor
     alignItems: 'center', // Alineación vertical centrada
+    marginBottom: 20,
   },
   crearCuentaPregunta: {
     color: '#DFDFDF', // Gris claro
